@@ -8,14 +8,14 @@ import spacy
 import time
 
 ''' Run this command for the first time '''
-# spacy install en_core_web_sm
+# python -m spacy download en_core_web_sm
 ''' Only uncomment if this (stopwords nltk download) is the first time running '''
 # nltk.download('stopwords')
 
 nlp = spacy.load("en_core_web_sm")
 
 TRIAL_RUN = True # Recommended to set as True if first time running
-READ_NUM = 10 # Number of transcripts we read
+READ_NUM = 1 # Number of transcripts we read
 ERR_COUNT = 0 # Number of transcripts unable to parse
 VID_CAP_PATH = 'vid_captions_abridged.xlsx'
 OUT_DOCS_PATH = 'docs.csv'
