@@ -5,6 +5,8 @@ import csv
 import json
 
 import youtube_dl
+import google_auth_oauthlib
+import googleapiclient
 from dotenv import load_dotenv
 from pathlib import Path
 from youtube_api import YouTubeDataAPI
@@ -78,7 +80,7 @@ def main():
         vids = getVideoIDs(f"{VID_REPO}/{chanFile}")
         print(f"{chanFile}: {len(vids)}")
 
-        for i in range(len(vids)):
+        for i in range(2): #range(len(vids)):
             video_id = vids[i]
 
             try:
@@ -87,27 +89,30 @@ def main():
                 continue
 
             entries.append({'vid': video_id, 'transcript': captions})
-            print(f'{chanFile}: ({i+1}/{len(vids)})')
+            print(f'{chanFile}: ({i+1}/{len(vids)})`')
 
             # grab video metadata TODO some other day
-            '''
-            part_opts = ['contentDetails', 'statistics', 'snippet']
-            print('%2C'.join(part_opts))
-            params = {
-                'part': '%2C'.join(part_opts),
-                'id': video_id,
-                'key': API_KEY
-            }
-            uri = urllib.parse.urlencode(params)
-            full_url = YT_VIDEOS_ENDPOINT + uri
+            scopes = ["https://www.googleapis.com/auth/youtube.readonly"]
+            os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
-            # Get the response from the API
-            print(full_url)
-            http = urllib3.PoolManager()
-            r = http.request('GET', full_url)
+            api_service_name = "youtube"
+            api_version = "v3"
+            client_secrets_file = "YOUR_CLIENT_SECRET_FILE.json"
 
-            print(r.data)
-            '''
+            # Get credentials and create an API client
+            flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
+                client_secrets_file, scopes)
+            credentials = flow.run_console()
+            youtube = googleapiclient.discovery.build(
+                api_service_name, api_version, credentials=credentials)
+
+            request = youtube.videos().list(
+                part="snippet,contentDetails,statistics",
+                id="Ks-_Mh1QhMc"
+            )
+            response = request.execute()
+
+            print(response)
 
     print(f'Channels completed parsing; {len(entries)} videos were parsed')
     # Work with csv now to output
