@@ -78,7 +78,7 @@ def main():
         vids = getVideoIDs(f"{VID_REPO}/{chanFile}")
         print(f"{chanFile}: {len(vids)}")
 
-        for i in range(2): #range(len(vids)):
+        for i in range(len(vids)):
             video_id = vids[i]
 
             try:
@@ -90,6 +90,7 @@ def main():
             print(f'{chanFile}: ({i+1}/{len(vids)})`')
 
             # grab video metadata TODO some other day
+            '''
             part_opts = ['contentDetails', 'statistics', 'snippet']
             print('%2C'.join(part_opts))
             params = {
@@ -106,6 +107,8 @@ def main():
             r = http.request('GET', full_url)
 
             print(r.data)
+
+            '''
 
     print(f'Channels completed parsing; {len(entries)} videos were parsed')
     # Work with csv now to output
