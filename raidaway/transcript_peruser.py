@@ -1,9 +1,9 @@
-import pandas as pd
 import json
 import nltk
-from nltk.corpus import stopwords, wordnet
-from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.corpus import stopwords #, wordnet
+# from nltk.stem.wordnet import WordNetLemmatizer
 import os
+import pandas as pd
 import spacy
 import time
 
@@ -11,17 +11,16 @@ import time
 # python -m spacy download en_core_web_sm
 ''' Only uncomment if this (stopwords nltk download) is the first time running '''
 
-nlp = spacy.load("en_core_web_sm")
-
 TRIAL_RUN = False # Recommended to set as True if first time running
 READ_NUM = 3 # Number of transcripts we read
 ERR_COUNT = 0 # Number of transcripts unable to parse
-VID_CAP_PATH = 'vid_captions.xlsx'
-OUT_DOCS_PATH = 'docs.csv'
-OUT_FREQ_PATH = 'freq.csv'
+VID_CAP_PATH = 'data/vid_captions.xlsx'
+OUT_DOCS_PATH = 'data/docs.csv'
+OUT_FREQ_PATH = 'data/freq.csv'
 COUNT = 0
 
 # lemma = nltk.stem.wordnet.WordNetLemmatizer()
+nlp = spacy.load("en_core_web_sm")
 
 def convert(row, freq_df):
     global COUNT
@@ -64,6 +63,7 @@ def convert(row, freq_df):
         row['transcript'] = corpus
         row['words_counts'] = words_counts
     except Exception as e:
+        row['err'] = 1
         print("ERROR FOUND", e)
         ERR_COUNT += 1
 
@@ -79,10 +79,10 @@ def get_data(trial):
     assert os.path.exists(VID_CAP_PATH), f'ERROR --> data file path ({VID_CAP_PATH}) not found.'
 
     if trial:
-        print('Reading initial {} transcripts'.format(READ_NUM))
+        print('Reading initial {} transcripts...'.format(READ_NUM))
         docs = pd.read_excel(VID_CAP_PATH, header=None, engine='openpyxl', usecols=[0,1], nrows=READ_NUM)
     else:
-        print('Reading all transcripts')
+        print('Reading ALL transcripts...')
         docs = pd.read_excel(VID_CAP_PATH, header=None, engine='openpyxl', usecols=[0,1])
     print('Finished Reading')
 
@@ -95,6 +95,7 @@ def get_data(trial):
     docs['transcript'] = ''
     docs['words_counts'] = ''
     docs['occurence_map'] = ''
+    docs['err'] = ''
 
     # WE NEED TO CURATE THE WORDS TO SEE WHAT WE WANT TO COMPUTE A VECTOR WITH
     freq = pd.DataFrame()
@@ -103,28 +104,19 @@ def get_data(trial):
     freq['vid_count'] = 0
     freq['total_count'] = 0
 
-    print('Converting to JSON and analyzing')
+    print('Converting to JSON and analyzing corpus...')
     docs = docs.apply(lambda row: convert(row, freq), axis=1)
     print(f'Failed to read {ERR_COUNT} transcipts...')
 
-    # Remove all rare words
-    freq = curate(freq)
     freq.to_csv('freq.csv')
 
     return docs, freq
-
-def curate(freq):
-
-    #####
-    freq = freq[freq.vid_count != 1]
-    return freq[freq.total_count != 1]
 
 def main():
 
     docs, freq = get_data(TRIAL_RUN)
     docs.to_csv(OUT_DOCS_PATH)
     freq.to_csv(OUT_FREQ_PATH)
-    curate(freq)
 
 if __name__ == '__main__':
     print('Starting transcript_peruser...')
