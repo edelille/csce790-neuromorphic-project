@@ -5,8 +5,6 @@ import csv
 import json
 
 import youtube_dl
-import google_auth_oauthlib
-import googleapiclient
 from dotenv import load_dotenv
 from pathlib import Path
 from youtube_api import YouTubeDataAPI
@@ -92,27 +90,22 @@ def main():
             print(f'{chanFile}: ({i+1}/{len(vids)})`')
 
             # grab video metadata TODO some other day
-            scopes = ["https://www.googleapis.com/auth/youtube.readonly"]
-            os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+            part_opts = ['contentDetails', 'statistics', 'snippet']
+            print('%2C'.join(part_opts))
+            params = {
+                'part': 'snippet',
+                'id': video_id,
+                'key': API_KEY
+            }
+            uri = urllib.parse.urlencode(params)
+            full_url = YT_VIDEOS_ENDPOINT + uri
+            print("full_uri: ", full_url)
 
-            api_service_name = "youtube"
-            api_version = "v3"
-            client_secrets_file = "YOUR_CLIENT_SECRET_FILE.json"
+            # Get the response from the API
+            http = urllib3.PoolManager()
+            r = http.request('GET', full_url)
 
-            # Get credentials and create an API client
-            flow = google_auth_oauthlib.flow.InstalledAppFlow.from_client_secrets_file(
-                client_secrets_file, scopes)
-            credentials = flow.run_console()
-            youtube = googleapiclient.discovery.build(
-                api_service_name, api_version, credentials=credentials)
-
-            request = youtube.videos().list(
-                part="snippet,contentDetails,statistics",
-                id="Ks-_Mh1QhMc"
-            )
-            response = request.execute()
-
-            print(response)
+            print(r.data)
 
     print(f'Channels completed parsing; {len(entries)} videos were parsed')
     # Work with csv now to output

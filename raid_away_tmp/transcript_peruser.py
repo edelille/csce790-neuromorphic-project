@@ -10,29 +10,33 @@ import time
 ''' Run this command for the first time '''
 # python -m spacy download en_core_web_sm
 ''' Only uncomment if this (stopwords nltk download) is the first time running '''
-# nltk.download('stopwords')
 
 nlp = spacy.load("en_core_web_sm")
 
-TRIAL_RUN = True # Recommended to set as True if first time running
-READ_NUM = 1 # Number of transcripts we read
+TRIAL_RUN = False # Recommended to set as True if first time running
+READ_NUM = 3 # Number of transcripts we read
 ERR_COUNT = 0 # Number of transcripts unable to parse
 VID_CAP_PATH = 'vid_captions_abridged.xlsx'
 OUT_DOCS_PATH = 'docs.csv'
 OUT_FREQ_PATH = 'freq.csv'
+COUNT = 0
 
 # lemma = nltk.stem.wordnet.WordNetLemmatizer()
 
 def convert(row, freq_df):
-
+    global COUNT
     global ERR_COUNT
     global READ_NUM
+    
+    COUNT += 1
+    startTime = time.time()
     ''' Maybe add limit on how short/long the video can be '''
     # print(len(row['json_str']))
-    lines = row['json_str'][1:-1].split('},')
-    corpus = ''
-    words_counts = []
     try:
+        lines = row['json_str'][1:-1].split('},')
+        corpus = ''
+        words_counts = []
+
         for a in range(0, lines.__len__()-1):
             corpus += json.loads(lines[a] + '}')['text'] + ' '
         corpus += json.loads(lines[-1])['text']
@@ -59,10 +63,15 @@ def convert(row, freq_df):
                 })
         row['transcript'] = corpus
         row['words_counts'] = words_counts
-    except:
+    except Exception as e:
+        print("ERROR FOUND", e)
         ERR_COUNT += 1
-    READ_NUM -= 1
-    print(READ_NUM)
+
+    if TRIAL_RUN:
+        READ_NUM -= 1
+        print(READ_NUM)
+
+    print(time.time() - startTime, COUNT)
     return row
 
 def get_data(trial):
