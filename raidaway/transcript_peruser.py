@@ -11,7 +11,7 @@ import time
 # python -m spacy download en_core_web_sm
 ''' Only uncomment if this (stopwords nltk download) is the first time running '''
 
-TRIAL_RUN = False # Recommended to set as True if first time running
+TRIAL_RUN = True # Recommended to set as True if first time running
 READ_NUM = 3 # Number of transcripts we read
 ERR_COUNT = 0 # Number of transcripts unable to parse
 VID_CAP_PATH = 'data/vid_captions.xlsx'
