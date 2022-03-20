@@ -34,7 +34,8 @@ def convert(row, freq_df):
     try:
         lines = row['json_str'][1:-1].split('},')
         corpus = ''
-        words_counts = []
+        # words_counts = []
+        words_counts = {}
 
         for a in range(0, lines.__len__()-1):
             corpus += json.loads(lines[a] + '}')['text'] + ' '
@@ -51,7 +52,8 @@ def convert(row, freq_df):
                         # token = lemma.lemmatize(token) # nltk is not good at lemmatizing verbs
                         token = nlp(token)[0].lemma_ # Technically spacy is better, but spacy is more designed for pipelines
         for token in set(word_tokens):
-            words_counts.append([token, word_tokens.count(token)])
+            # words_counts.append([token, word_tokens.count(token)])
+            words_counts[token] = word_tokens.count(token)
             if token in freq_df.index:
                 freq_df.loc[[token], ['vid_count']] += 1
                 freq_df.loc[[token], ['total_count']] += word_tokens.count(token)
