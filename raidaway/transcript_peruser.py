@@ -15,14 +15,15 @@ TRIAL_RUN = False # Recommended to set as True if first time running
 READ_NUM = 3 # Number of transcripts we read
 ERR_COUNT = 0 # Number of transcripts unable to parse
 VID_CAP_PATH = 'data/vid_captions.xlsx'
-OUT_DOCS_PATH = 'data/docs.csv'
-OUT_FREQ_PATH = 'data/freq.csv'
+OUT_DOCS_PATH = 'data/docs.xlsx'
+OUT_FREQ_PATH = 'data/freq.xlsx'
 COUNT = 0
 
 # lemma = nltk.stem.wordnet.WordNetLemmatizer()
 nlp = spacy.load("en_core_web_sm")
 
 def convert(row, freq_df):
+
     global COUNT
     global ERR_COUNT
     global READ_NUM
@@ -34,8 +35,8 @@ def convert(row, freq_df):
     try:
         lines = row['json_str'][1:-1].split('},')
         corpus = ''
-        # words_counts = []
-        words_counts = {}
+        # word_counts = []
+        word_counts = {}
 
         for a in range(0, lines.__len__()-1):
             corpus += json.loads(lines[a] + '}')['text'] + ' '
@@ -52,8 +53,8 @@ def convert(row, freq_df):
                         # token = lemma.lemmatize(token) # nltk is not good at lemmatizing verbs
                         token = nlp(token)[0].lemma_ # Technically spacy is better, but spacy is more designed for pipelines
         for token in set(word_tokens):
-            # words_counts.append([token, word_tokens.count(token)])
-            words_counts[token] = word_tokens.count(token)
+            # word_counts.append([token, word_tokens.count(token)])
+            word_counts[token] = word_tokens.count(token)
             if token in freq_df.index:
                 freq_df.loc[[token], ['vid_count']] += 1
                 freq_df.loc[[token], ['total_count']] += word_tokens.count(token)
@@ -63,7 +64,7 @@ def convert(row, freq_df):
                     'total_count': word_tokens.count(token)
                 })
         row['transcript'] = corpus
-        row['words_counts'] = words_counts
+        row['word_counts'] = word_counts
     except Exception as e:
         row['err'] = 1
         print("ERROR FOUND", e)
@@ -95,8 +96,7 @@ def get_data(trial):
     )
     docs.set_index('vid_id')
     docs['transcript'] = ''
-    docs['words_counts'] = ''
-    docs['occurence_map'] = ''
+    docs['word_counts'] = ''
     docs['err'] = ''
 
     # WE NEED TO CURATE THE WORDS TO SEE WHAT WE WANT TO COMPUTE A VECTOR WITH
@@ -110,22 +110,23 @@ def get_data(trial):
     docs = docs.apply(lambda row: convert(row, freq), axis=1)
     print(f'Failed to read {ERR_COUNT} transcipts...')
 
-    freq.to_csv('freq.csv')
+    freq.to_excel('freq.xlsx')
 
     return docs, freq
 
 def main():
 
     docs, freq = get_data(TRIAL_RUN)
-    docs.to_csv(OUT_DOCS_PATH)
-    freq.to_csv(OUT_FREQ_PATH)
+    docs.to_excel(OUT_DOCS_PATH, index=False)
+    freq.to_excel(OUT_FREQ_PATH, index=False)
 
 if __name__ == '__main__':
+    
     print('Starting transcript_peruser...')
 
     startTime = time.time()
-
     main()
-
     exec_time = time.time() - startTime
+
     print(f'Execution time in seconds: {str(exec_time)})')
+    
