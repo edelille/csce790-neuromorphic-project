@@ -2,16 +2,16 @@
 import pandas as pd
 import spacy
 
-INPUT_PATH = 'data/freq.csv'
-OUTPUT_PATH = 'data/curated_freq.csv'
-OUTPUT_REMOVED_PATH = 'data/removed_freq.csv'
+INPUT_PATH = 'data/freq.xlsx'
+OUTPUT_CURATED_PATH = 'data/curated_freq.xlsx'
+OUTPUT_REMOVED_PATH = 'data/removed_freq.xlsx'
 
 # Tune according to full data set
-VID_COUNT_FLOOR = 15
-TOTAL_COUNT_FLOOR = 15
+VID_COUNT_FLOOR = 25
+TOTAL_COUNT_FLOOR = 50
 
 print('Loading data...')
-freq = pd.read_csv(INPUT_PATH)
+freq = pd.read_excel(INPUT_PATH, engine='openpyxl')
 
 # lemma = nltk.stem.wordnet.WordNetLemmatizer()
 nlp = spacy.load("en_core_web_sm")
@@ -29,16 +29,16 @@ def both_mask(mask):
 
     return freq[mask], removed.append(freq[~mask])
 
+'''
 def lemma_word(row):
 
     # new_word = lemma.lemmatize(row.word)
     new_word = nlp(row.word)[0].lemma_
-    '''
     if row.word != new_word: 
         print('{} -> {}'.format(row.word, new_word))
         row.word = new_word
-    '''
     return row
+'''
 
 def main():
 
@@ -66,16 +66,18 @@ def main():
     freq, removed = both_mask((freq.vid_count >= VID_COUNT_FLOOR))
     freq, removed = both_mask((freq.total_count >= TOTAL_COUNT_FLOOR))
     freq, removed = both_mask((freq.word.str.len() >= 3))
-    blacklist = '1234567890'
+    blacklist = '1234567890\'"'
     for char in blacklist:
         freq, removed = both_mask(~(freq.word.str.contains(char)))
         
     print('Row count after curating with mask: {} -> {}'.format(orig_count, freq.shape[0]))
 
     print('Saving data...')
-    freq.to_csv(OUTPUT_PATH, index=False)
-    removed.to_csv(OUTPUT_REMOVED_PATH, index=False)
+    freq.to_excel(OUTPUT_CURATED_PATH, index=False)
+    # Only for FLOOR variable tuning purposes
+    # removed.to_excel(OUTPUT_REMOVED_PATH, index=False)
 
 if __name__ == '__main__':
-
+    
+    print('Starting word_curator...')
     main()
