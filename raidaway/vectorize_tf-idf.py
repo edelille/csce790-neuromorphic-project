@@ -73,6 +73,7 @@ def main():
     docs = docs[~(docs.tf_idf == '')]
     docs.drop(columns='err', inplace=True)
 
+    print('Saving data...')
     docs.to_excel(OUT_PATH, index=False)
 
 if __name__ == '__main__':

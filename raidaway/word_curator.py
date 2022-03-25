@@ -6,12 +6,14 @@ INPUT_PATH = 'data/freq_words.xlsx'
 OUTPUT_CURATED_PATH = 'data/curated_words.xlsx'
 OUTPUT_REMOVED_PATH = 'data/removed_words.xlsx'
 
-# Tune according to full data set
+# Tune hyperparameters to full data set
 VID_COUNT_FLOOR = 25
 TOTAL_COUNT_FLOOR = 50
 
 print('Loading data...')
 freq = pd.read_excel(INPUT_PATH, engine='openpyxl')
+freq = freq.astype({'word':'string'})
+
 
 # lemma = nltk.stem.wordnet.WordNetLemmatizer()
 nlp = spacy.load("en_core_web_sm")
@@ -46,7 +48,6 @@ def main():
     global freq
     global removed
 
-    freq = freq.astype({'word':'string'})
     freq.dropna(inplace=True)
 
     orig_count = freq.shape[0]

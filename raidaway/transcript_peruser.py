@@ -13,7 +13,7 @@ import time
 ''' Only uncomment if this (stopwords nltk download) is the first time running '''
 
 TRIAL_RUN = False # Recommended to set as True if first time running
-READ_NUM = 3 # Number of transcripts we read if TRIAL RUN
+READ_NUM = 10 # Number of transcripts we read if TRIAL RUN
 ERR_COUNT = 0 # Number of transcripts unable/failed to parse
 # SG_SIZE = 4
 VID_CAP_PATH = 'data/vid_captions.xlsx'
@@ -27,7 +27,7 @@ COUNT = 0
 # lemma = nltk.stem.wordnet.WordNetLemmatizer()
 nlp = spacy.load("en_core_web_sm")
 
-def peruse(row, freq_words_df):
+def peruse(row, freq_words_df, freq_sg_df):
 
     global COUNT
     global ERR_COUNT
@@ -60,7 +60,7 @@ def peruse(row, freq_words_df):
                 # Mark for deletion
                 word_tokens[a] = '*****'
         # Remove elements marked to be deleted
-        word_tokens = filter(lambda val: val !=  '*****', word_tokens) 
+        word_tokens = [token for token in word_tokens if token != '*****']
         for token in set(word_tokens):
             # word_counts.append([token, word_tokens.count(token)])
             word_counts[token] = word_tokens.count(token)
@@ -79,11 +79,11 @@ def peruse(row, freq_words_df):
         for a in range(0, word_tokens.__len__() - SG_SIZE + 1):
             sgs.update(word_tokens[a:a + SG_SIZE])
         sgs = list(sgs)
+        '''
         
         row['transcript'] = corpus
         row['word_counts'] = word_counts
-        row['skip_gram'] = sgs
-        '''
+        # row['skip_gram'] = sgs
 
     except Exception as e:
         row['err'] = 1
@@ -157,8 +157,8 @@ def get_data(trial):
 def main():
 
     docs, freq = get_data(TRIAL_RUN)
-    docs.to_excel(OUT_DOCS_PATH, index=False)
-    freq.to_excel(OUT_FREQ_WORDS_PATH, index=False)
+    docs.to_excel(OUT_DOCS_PATH)
+    freq.to_excel(OUT_FREQ_WORDS_PATH)
 
 if __name__ == '__main__':
     
