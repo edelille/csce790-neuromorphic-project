@@ -2,9 +2,9 @@
 import pandas as pd
 import spacy
 
-INPUT_PATH = 'data/freq.xlsx'
-OUTPUT_CURATED_PATH = 'data/curated_freq.xlsx'
-OUTPUT_REMOVED_PATH = 'data/removed_freq.xlsx'
+INPUT_PATH = 'data/freq_words.xlsx'
+OUTPUT_CURATED_PATH = 'data/curated_words.xlsx'
+OUTPUT_REMOVED_PATH = 'data/removed_words.xlsx'
 
 # Tune according to full data set
 VID_COUNT_FLOOR = 25
@@ -20,6 +20,7 @@ removed = pd.DataFrame()
 removed['word'] = ''
 removed['vid_count'] = 0
 removed['total_count'] = 0
+removed['idf'] = 0
 
 # Allows us to apply masks while also letting us maintain record of words removed
 def both_mask(mask):
