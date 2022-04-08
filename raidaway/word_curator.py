@@ -2,18 +2,17 @@
 import pandas as pd
 import spacy
 
-INPUT_PATH = 'data/freq_words.xlsx'
+INPUT_PATH = 'data/lemma_freq_words.xlsx'
 OUTPUT_CURATED_PATH = 'data/curated_words.xlsx'
 OUTPUT_REMOVED_PATH = 'data/removed_words.xlsx'
 
 # Tune hyperparameters to full data set
-VID_COUNT_FLOOR = 25
-TOTAL_COUNT_FLOOR = 50
+VID_COUNT_FLOOR = 20
+TOTAL_COUNT_FLOOR = 20
 
 print('Loading data...')
 freq = pd.read_excel(INPUT_PATH, engine='openpyxl')
 freq = freq.astype({'word':'string'})
-
 
 # lemma = nltk.stem.wordnet.WordNetLemmatizer()
 nlp = spacy.load("en_core_web_sm")
@@ -71,7 +70,7 @@ def main():
     blacklist = '1234567890\'"'
     for char in blacklist:
         freq, removed = both_mask(~(freq.word.str.contains(char)))
-        
+
     print('Row count after curating with mask: {} -> {}'.format(orig_count, freq.shape[0]))
 
     print('Saving data...')
@@ -83,3 +82,4 @@ if __name__ == '__main__':
     
     print('Starting word_curator...')
     main()
+    
