@@ -1,10 +1,6 @@
 import os
-import urllib
-import urllib3
 import csv
 import json
-
-import youtube_dl
 from dotenv import load_dotenv
 from pathlib import Path
 from youtube_api import YouTubeDataAPI

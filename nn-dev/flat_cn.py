@@ -8,7 +8,7 @@ import time
 
 # Path variables
 ENCODING_PATH_DIC = {
-    'TF_IDF': 'encodings/TF_IDF_FLAT_encoding.txt',
+    'TF_IDF': 'encodings/tf-idf_FLAT_encoding.txt',
     'BOOL': 'encodings/bool_FLAT_encoding.txt'
 }
 MODEL_PATH_DICT = {
@@ -115,7 +115,7 @@ def main():
     global LABELLING
 
     print('Getting, converting, and splitting data...')
-    df = pd.read_excel('data/TF_IDF.xlsx', engine='openpyxl')
+    df = pd.read_excel('data/tf-idf.xlsx', engine='openpyxl')
     df.apply(lambda row: get_data(row), axis=1)
     LABELLING = np.array(LABELLING, np.int_)
     DATA = np.array(DATA, np.float_)

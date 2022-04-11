@@ -13,3 +13,5 @@ Scripts to build models:
 
 1. svm.py
 2. flat_ffn.py
+3. flat_cn.py
+4. spiral_cn.py

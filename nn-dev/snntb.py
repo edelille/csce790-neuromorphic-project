@@ -3,8 +3,8 @@ import configparser
 from snntoolbox.bin.run import main
 import sys
 
-NUM_STEPS_PER_SAMPLE = 18   # Number of timesteps to run each sample (DURATION)
-BATCH_SIZE = 32             # Affects memory usage. 32 -> 10 GB
+NUM_STEPS_PER_SAMPLE = 25  # Number of timesteps to run each sample (DURATION)
+BATCH_SIZE = 64             # Affects memory usage. 32 -> 10 GB
 NUM_TEST_SAMPLES = 100      # Number of samples to evaluate or use for inference
 CONVERT_MODEL = True      
 
@@ -35,7 +35,7 @@ elif sys.argv[2].lower() == 's':
 else:
     print(to_print)
     sys.exit(1)
-ENCODING3 = None
+ENCODING3 = 'CN'
 if ENCODING2 == 'FLAT':
     if sys.argv[3].lower() == 'c':
         ENCODING3 = 'CN'
@@ -44,17 +44,15 @@ if ENCODING2 == 'FLAT':
     else:
         print(to_print)
         sys.exit(1)
-else: # ENCODING2 == 'SPIRAL'
-    ENCODING3 == 'CN'
 
-E1 = ENCODING1.replace('-', '_').lower()
+E1 = ENCODING1.replace('_', '-').lower()
 MODEL = f'{ENCODING2.lower()}_{ENCODING3.lower()}_{E1}'
 MODEL_FILENAME = f'models/{MODEL}'
 MODEL_NAME = MODEL_FILENAME.strip('.h5')
 CURR_DIR = os.path.abspath('.')
 ANN_MODEL_PATH = os.path.join(CURR_DIR, 'models', MODEL_FILENAME)
 WORKING_DIR = os.path.join(CURR_DIR, '')
-DATASET_DIR = os.path.join(CURR_DIR, f'npz/{ENCODING2.lower()}_{E1}_npz')
+DATASET_DIR = os.path.join(CURR_DIR, f'npz/{ENCODING2.lower()}_{ENCODING1.lower()}_npz')
 
 # Generate Config file
 config = configparser.ConfigParser()
@@ -94,7 +92,7 @@ config['output'] = {
     'overwrite': True
 }
 
-config_filepath = os.path.join(WORKING_DIR, 'config')
+config_filepath = os.path.join(WORKING_DIR, 'data/config')
 with open(config_filepath, 'w') as configfile:
     config.write(configfile)
 
