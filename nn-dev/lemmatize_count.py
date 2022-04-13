@@ -2,7 +2,6 @@ import json
 import nltk
 from nltk.corpus import stopwords #, wordnet
 # from nltk.stem.wordnet import WordNetLemmatizer
-import os
 import pandas as pd
 import spacy
 import time

@@ -130,5 +130,4 @@ dmypy.json
 
 py-db-populator/output/*
 nn-dev/data/*
-nn-dev/models/*
 nn-dev/log/*
