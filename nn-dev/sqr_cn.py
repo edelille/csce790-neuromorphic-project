@@ -177,7 +177,7 @@ def main():
         model = tf.keras.models.Sequential()
         model.add(tf.keras.Input(shape=input_shape)) # Input
         model.add(tf.keras.layers.Conv2D(filters=4, kernel_size=2, strides=2))
-        model.add(tf.keras.layers.Conv2D(filters=8, kernel_size=2, strides=2))
+        model.add(tf.keras.layers.Conv2D(filters=4, kernel_size=2, strides=2))
         model.add(tf.keras.layers.Flatten())
         model.add(tf.keras.layers.Dense(units=128, activation='relu'))
         model.add(tf.keras.layers.Dropout(.2))

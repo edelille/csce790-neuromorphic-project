@@ -1,5 +1,4 @@
 import json
-import math
 import nltk
 from nltk.corpus import stopwords #, wordnet
 # from nltk.stem.wordnet import WordNetLemmatizer

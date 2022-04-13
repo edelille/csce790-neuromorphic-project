@@ -1,7 +1,4 @@
-from gzip import READ
 import json
-import math
-from pickle import GLOBAL
 import nltk
 from nltk.corpus import stopwords #, wordnet
 # from nltk.stem.wordnet import WordNetLemmatizer
