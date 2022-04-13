@@ -7,13 +7,14 @@ import tensorflow as tf
 import time
 
 # Path variables
+DATA_PATH = 'data/tf_idf.xlsx'
 ENCODING_PATH_DIC = {
-    'TF_IDF': 'encodings/tf-idf_FLAT_encoding.txt',
-    'BOOL': 'encodings/bool_FLAT_encoding.txt'
+    'TF_IDF': 'encodings/flat_tf_idf_encoding.txt',
+    'BOOL': 'encodings/flat_bool_encoding.txt'
 }
 MODEL_PATH_DICT = {
-    'TF_IDF': 'models/flat_ffn_tf-idf.h5',
-    'BOOL': 'models/flat_ffn_bool.h5'
+    'TF_IDF': 'models/flat_tf_idf_ffn.h5',
+    'BOOL': 'models/flat_bool_ffn.h5'
 }
 
 def num(arg):
@@ -115,7 +116,7 @@ def main():
     global LABELLING
 
     print('Getting, converting, and splitting data...')
-    df = pd.read_excel('data/tf-idf.xlsx', engine='openpyxl')
+    df = pd.read_excel(DATA_PATH, engine='openpyxl')
     df.apply(lambda row: get_data(row), axis=1)
     LABELLING = np.array(LABELLING, np.int_)
     DATA = np.array(DATA, np.float_)
@@ -153,7 +154,7 @@ def main():
         model.add(tf.keras.Input(shape=input_shape)) # Input
         model.add(tf.keras.layers.Dense(units=256, activation='relu'))
         model.add(tf.keras.layers.Dropout(.2))
-        model.add(tf.keras.layers.Dense(units=128, activation='sigmoid'))
+        model.add(tf.keras.layers.Dense(units=256, activation='relu'))
         model.add(tf.keras.layers.Dense(units=2, activation='sigmoid')) # Output
         
         # Compile the model

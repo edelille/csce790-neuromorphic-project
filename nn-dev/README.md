@@ -1,13 +1,16 @@
-Scripts to prepare data:
+Scripts to get data:
 
 1. nltk_downloads.py
 2. clean_data.py
 3. get_transcripts.py
 4. lemmatize_count.py
-5. word_curator.py
-6. vectorize_tf-idf.py
-7. val_diff.py
-8. img_layout.py
+
+Scripts to prepare data:
+
+1. word_curator.py
+2. vectorize_tf_idf.py
+3. val_diff.py
+4. gen_encodings.py
 
 Scripts to build models:
 

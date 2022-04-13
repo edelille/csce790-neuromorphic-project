@@ -7,13 +7,14 @@ import tensorflow as tf
 import time
 
 # Path variables
+DATA_PATH = 'data/tf_idf.xlsx'
 ENCODING_PATH_DIC = {
-    'TF_IDF': 'encodings/tf-idf_FLAT_encoding.txt',
-    'BOOL': 'encodings/bool_FLAT_encoding.txt'
+    'TF_IDF': 'encodings/flat_tf_idf_encoding.txt',
+    'BOOL': 'encodings/flat_bool_encoding.txt'
 }
 MODEL_PATH_DICT = {
-    'TF_IDF': 'models/flat_cn_tf-idf.h5',
-    'BOOL': 'models/flat_cn_bool.h5'
+    'TF_IDF': 'models/flat_tf_idf_cn.h5',
+    'BOOL': 'models/flat_bool_cn.h5'
 }
 
 def num(arg):
@@ -115,7 +116,7 @@ def main():
     global LABELLING
 
     print('Getting, converting, and splitting data...')
-    df = pd.read_excel('data/tf-idf.xlsx', engine='openpyxl')
+    df = pd.read_excel(DATA_PATH, engine='openpyxl')
     df.apply(lambda row: get_data(row), axis=1)
     LABELLING = np.array(LABELLING, np.int_)
     DATA = np.array(DATA, np.float_)
@@ -156,7 +157,7 @@ def main():
         model.add(tf.keras.layers.Reshape((input_shape[0], 1))), # Converts [None, x] into (x,1,) == [None, x, 1]
         model.add(tf.keras.layers.Conv1D(filters=5, kernel_size=20, strides=5))
         model.add(tf.keras.layers.Conv1D(filters=10, kernel_size=20, strides=5))
-        model.add(tf.keras.layers.MaxPooling1D(15))
+        # model.add(tf.keras.layers.MaxPooling1D(15))
         model.add(tf.keras.layers.Flatten())
         model.add(tf.keras.layers.Dense(units=128, activation='relu'))
         model.add(tf.keras.layers.Dropout(.2))

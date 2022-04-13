@@ -8,23 +8,23 @@ BATCH_SIZE = 64             # Affects memory usage. 32 -> 10 GB
 NUM_TEST_SAMPLES = 100      # Number of samples to evaluate or use for inference
 CONVERT_MODEL = True      
 
-to_print = 'snntb requires 3 arguments (3rd arg is conditional) following these specifications:\n' +\
+to_print = 'snntb requires 3 args (2nd and 3rd args are conditional) following these specifications:\n' +\
     'arg1:\n' +\
     '\tb -> Boolean Vectors (Doc2Vec)\n' +\
     '\tt -> TF-IDF Vectors\n' +\
-    'arg2:\n' +\
+    '\tr -> Random Square Vector\n' +\
+    'arg2 (if arg1 is not provided as \'r\'):\n' +\
     '\tf -> Flat Encoding\n' +\
     '\ts -> Spiral Encoding\n' +\
     'arg3: (if arg2 is provided as \'f\')\n' +\
     '\tc -> Convolution Network\n' +\
     '\tf -> Feed-Forward Network'
-if len(sys.argv) != 3 and len(sys.argv) != 4:
-    print(to_print)
-    sys.exit(1)
 if sys.argv[1].lower() == 'b':
     ENCODING1 = 'BOOL'
 elif sys.argv[1].lower() == 't':
     ENCODING1 = 'TF_IDF'
+elif sys.argv[1].lower() == 'r':
+    ENCODING1 = 'RANDOM'
 else:
     print(to_print)
     sys.exit(1)

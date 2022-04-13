@@ -7,13 +7,16 @@ import tensorflow as tf
 import time
 
 # Path variables
+DATA_PATH = 'data/tf_idf.xlsx'
 ENCODING_PATH_DIC = {
-    'TF_IDF': 'encodings/tf-idf_SPIRAL_encoding.txt',
-    'BOOL': 'encodings/bool_SPIRAL_encoding.txt'
+    'TF_IDF': 'encodings/spiral_tf_idf_encoding.txt',
+    'BOOL': 'encodings/spiral_bool_encoding.txt',
+    'RANDOM': 'encodings/random_sqr_encoding.txt'
 }
 MODEL_PATH_DICT = {
-    'TF_IDF': 'models/spiral_cn_tf-idf.h5',
-    'BOOL': 'models/spiral_cn_bool.h5'
+    'TF_IDF': 'models/spiral_tf_idf_cn.h5',
+    'BOOL': 'models/spiral_bool_cn.h5',
+    'RANDOM': 'models/random_sqr_cn.h5'
 }
 
 def num(arg):
@@ -24,7 +27,8 @@ def num(arg):
 
 to_print = 'spiral_cn only accepts 1 of the following for its single argument:\n' +\
         'b -> Boolean Vectors (Doc2Vec)\n' +\
-        't -> TF-IDF Vectors (Doc2Vec'
+        't -> TF-IDF Vectors (Doc2Vec\n' +\
+        'r -> Random Square Matrix\n'
 if len(sys.argv) != 2:
     print(to_print)
     sys.exit(1)
@@ -32,11 +36,16 @@ if sys.argv[1].lower() == 'b':
     ENCODING = 'BOOL'
 elif sys.argv[1].lower() == 't':
     ENCODING = 'TF_IDF'
+elif sys.argv[1].lower() == 'r':
+    ENCODING = 'RANDOM'
 else:
     print(to_print)
     sys.exit(1)
 
-SAVE_DATA_DIR_PATH = f'npz/spiral_{ENCODING.lower()}_npz/'
+if ENCODING != 'RANDOM':
+    SAVE_DATA_DIR_PATH = f'npz/spiral_{ENCODING.lower()}_npz/'
+else:
+    SAVE_DATA_DIR_PATH = f'npz/random_sqr_npz/'
 
 TRAIN_PERC = 50
 TEST_PERC = 25
@@ -125,7 +134,7 @@ def main():
     global LABELLING
 
     print('Getting, converting, and splitting data...')
-    df = pd.read_excel('data/tf-idf.xlsx', engine='openpyxl')
+    df = pd.read_excel(DATA_PATH, engine='openpyxl')
     df.apply(lambda row: get_data(row), axis=1)
     LABELLING = np.array(LABELLING, np.int_)
     DATA = np.array(DATA, np.float_)
@@ -209,6 +218,6 @@ def main():
 
 if __name__ == '__main__':
 
-    print('Starting spiral_cn...')
+    print('Starting sqr_cn...')
     main()
     

@@ -1,12 +1,14 @@
 import math
 import pandas as pd
+import random
 
-TF_IDF_VAL_DIFF_PATH = 'data/tf-idf_val_diff.xlsx'
+TF_IDF_VAL_DIFF_PATH = 'data/tf_idf_val_diff.xlsx'
 BOOL_VAL_DIFF_PATH = 'data/bool_val_diff.xlsx'
-TF_IDF_SPIRAL_ENCODING = 'encodings/tf-idf_spiral_encoding.txt'
-BOOL_SPIRAL_ENCODING = 'encodings/bool_spiral_encoding.txt'
-TF_IDF_FLAT_ENCODING = 'encodings/tf-idf_FLAT_encoding.txt'
-BOOL_FLAT_ENCODING = 'encodings/bool_FLAT_encoding.txt'
+TF_IDF_SPIRAL_ENCODING = 'encodings/spiral_tf_idf_encoding.txt'
+BOOL_SPIRAL_ENCODING = 'encodings/spiral_bool_encoding.txt'
+TF_IDF_FLAT_ENCODING = 'encodings/flat_tf_idf_encoding.txt'
+BOOL_FLAT_ENCODING = 'encodings/flat_bool_encoding.txt'
+RANDOM_SQR_ENCODING = 'encodings/random_sqr_encoding.txt'
 
 def spiral_str(keys):
     
@@ -46,7 +48,7 @@ def main():
     for a in range(0, len(cw_bool_list)):
         cw_bool.append(zip_bool[a][1])
 
-    print('Creating spiral encoding matrix...')
+    print('Creating spiral (square) encoding matrix...')
     sqrt = math.floor(math.sqrt(df_tf_idf.shape[0]))
     if sqrt % 2 == 1:
         n = df_tf_idf.shape[0] - sqrt**2
@@ -66,6 +68,11 @@ def main():
     tf_idf_spiral = spiral_str(cw_tf_idf)
     bool_spiral = spiral_str(cw_bool)
 
+    print('Creating random (square) encoding matrix...')
+    cw_random = cw_tf_idf.copy()
+    random.shuffle(cw_random)
+    random_spiral = spiral_str(cw_random)
+
     print('Saving encodings...')
     w = open(TF_IDF_SPIRAL_ENCODING, 'w')
     w.write(tf_idf_spiral)
@@ -80,6 +87,9 @@ def main():
     w = open(BOOL_FLAT_ENCODING, 'w')
     for cw in cw_bool:
         w.write(cw + '\n')
+    w.close()
+    w = open(RANDOM_SQR_ENCODING, 'w')
+    w.write(random_spiral)
     w.close()
 
 if __name__ == '__main__':

@@ -4,7 +4,7 @@ import pandas as pd
 
 CW_PATH = 'data/curated_words.xlsx'
 DOCS_PATH = 'data/lemma_docs.xlsx'
-OUT_PATH = 'data/tf-idf.xlsx'
+OUT_PATH = 'data/tf_idf.xlsx'
 
 curated_freq = pd.read_excel(CW_PATH, engine='openpyxl')
 curated_freq = curated_freq.set_index('word')
@@ -77,6 +77,6 @@ def main():
 
 if __name__ == '__main__':
     
-    print('Starting vectorize-idf...')
+    print('Starting vectorize_tf_idf...')
     main()
     

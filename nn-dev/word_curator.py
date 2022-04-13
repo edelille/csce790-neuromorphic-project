@@ -7,8 +7,8 @@ OUTPUT_CURATED_PATH = 'data/curated_words.xlsx'
 OUTPUT_REMOVED_PATH = 'data/removed_words.xlsx'
 
 # Tune hyperparameters to full data set
-VID_COUNT_FLOOR = 20
-TOTAL_COUNT_FLOOR = 20
+VID_COUNT_FLOOR = 10
+TOTAL_COUNT_FLOOR = max(VID_COUNT_FLOOR, 10)
 
 print('Loading data...')
 freq = pd.read_excel(INPUT_PATH, engine='openpyxl')
@@ -75,7 +75,6 @@ def main():
 
     print('Saving data...')
     freq.to_excel(OUTPUT_CURATED_PATH, index=False)
-    # Only for FLOOR variable tuning purposes
     # removed.to_excel(OUTPUT_REMOVED_PATH, index=False)
 
 if __name__ == '__main__':

@@ -1,17 +1,15 @@
 import json
-import numpy as np
 import pandas as pd
 from sklearn import svm, metrics
 from sklearn.model_selection import train_test_split
 
-TF_IDF_ENC_PATH = 'encodings/tf-idf_FLAT_encoding.txt'
-BOOL_ENC_PATH = 'encodings/bool_FLAT_encoding.txt'
-DATA_PATH = 'data/tf-idf.xlsx'
+TF_IDF_ENC_PATH = 'encodings/flat_tf_idf_encoding.txt'
+BOOL_ENC_PATH = 'encodings/flat_bool_encoding.txt'
+DATA_PATH = 'data/tf_idf.xlsx'
 
 X_tf_idf = []
 X_bool = []
 Y = []
-np.random.seed(100)
 
 class_num = {
     'no': 0,
@@ -60,28 +58,28 @@ def main():
         if line != '':
             cw_bool.append(line)
 
-    print('Getting tf-idf and bool vectors...')
+    print('Getting TF-IDF and Boolean vectors...')
     df.apply(lambda row: get_data(row, [cw_tf_idf, cw_bool]), axis=1)
 
-    print('Splitting tf-idf and bool training data and validation data...')
+    print('Splitting TF-IDF and Boolean training data and validation data...')
     X_tf_idf_train, X_tf_idf_test, Y_tf_idf_train, Y_tf_idf_test = train_test_split(X_tf_idf, Y, test_size=0.2)
     X_bool_train, X_bool_test, Y_bool_train, Y_bool_test = train_test_split(X_bool, Y, test_size=0.2)
 
-    print('Fitting tf-idf SVM with vectors...')
+    print('Fitting TF-IDF SVM with vectors...')
     clf_tf_idf = svm.SVC()
     clf_tf_idf.fit(X_tf_idf_train, Y_tf_idf_train)
 
-    print('Fitting bool SVM with vectors...')
+    print('Fitting Boolean SVM with vectors...')
     clf_bool = svm.SVC()
     clf_bool.fit(X_bool_train, Y_bool_train)
 
-    print('Evaluating the tf-idf model...')
+    print('Evaluating the TF-IDF model...')
     Y_pred = clf_tf_idf.predict(X_tf_idf_test)
     print('Accuracy:', metrics.accuracy_score(Y_tf_idf_test, Y_pred))
     print('Precision:', metrics.precision_score(Y_tf_idf_test, Y_pred))
     print('Recall:', metrics.recall_score(Y_tf_idf_test, Y_pred))
 
-    print('Evaluating the bool model...')
+    print('Evaluating the Boolean model...')
     Y_pred = clf_bool.predict(X_bool_test)
     print('Accuracy:', metrics.accuracy_score(Y_bool_test, Y_pred))
     print('Precision:', metrics.precision_score(Y_bool_test, Y_pred))

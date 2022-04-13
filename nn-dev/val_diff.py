@@ -3,8 +3,8 @@ import pandas as pd
 # import time
 
 CW_PATH = 'data/curated_words.xlsx'
-TF_IDF_PATH = 'data/tf-idf.xlsx'
-OUT_TF_IDF_PATH = 'data/tf-idf_val_diff.xlsx'
+TF_IDF_PATH = 'data/tf_idf.xlsx'
+OUT_TF_IDF_PATH = 'data/tf_idf_val_diff.xlsx'
 OUT_BOOL_PATH = 'data/bool_val_diff.xlsx'
 
 def num(arg):
@@ -38,13 +38,7 @@ def main():
     
     print('Getting values for class 0...')
     for a in range(0, df0.shape[0]):
-        try:
-            tf_idf_vals = json.loads(df0.iloc[a]['tf_idf'])
-        except:
-            print(df0.iloc[a]['tf_idf'])
-            print(len(df0.iloc[a]['tf_idf']))
-            import sys
-            sys.exit()
+        tf_idf_vals = json.loads(df0.iloc[a]['tf_idf'])
         for cw in cw_list:
             data[cw]['count_0'] += 1
             data[cw]['tf_idf_0'] += num(tf_idf_vals.get(cw))
@@ -98,9 +92,9 @@ def main():
         del new_row
     
     print('Applying masks...')
-    df_tf_idf = df[(df['tf_idf_diff'] >= 2) | (df['tf_idf_ratio'] >= 3)]
+    df_tf_idf = df[(df['tf_idf_diff'] >= 1) | (df['tf_idf_ratio'] >= 2)]
     print(f'TF_IDF_VAL_DIFF: {df.shape[0]} -> {df_tf_idf.shape[0]}')
-    df_bool = df[(df['bool_diff'] >= .2) | (df['bool_ratio'] >= 10)]
+    df_bool = df[(df['bool_diff'] >= .1) | (df['bool_ratio'] >= 2)]
     print(f'BOOL_VAL_DIFF: {df.shape[0]} -> {df_bool.shape[0]}')
     
     print('Saving data...')
