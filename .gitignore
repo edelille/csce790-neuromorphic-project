@@ -129,5 +129,5 @@ dmypy.json
 .pyre/
 
 py-db-populator/output/*
-raidaway/data/*
-raidaway/models/*
+nn-dev/data/*
+nn-dev/log/*
