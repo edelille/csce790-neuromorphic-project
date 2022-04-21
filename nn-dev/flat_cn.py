@@ -10,11 +10,13 @@ import time
 DATA_PATH = 'data/tf_idf.xlsx'
 ENCODING_PATH_DIC = {
     'TF_IDF': 'encodings/flat_tf_idf_encoding.txt',
-    'BOOL': 'encodings/flat_bool_encoding.txt'
+    'BOOL': 'encodings/flat_bool_encoding.txt',
+    'RANDOM': 'encodings/flat_random_encoding.txt'
 }
 MODEL_PATH_DICT = {
     'TF_IDF': 'models/flat_tf_idf_cn.h5',
-    'BOOL': 'models/flat_bool_cn.h5'
+    'BOOL': 'models/flat_bool_cn.h5',
+    'RANDOM': 'models/flat_random_cn.h5'
 }
 
 def num(arg):
@@ -24,8 +26,9 @@ def num(arg):
         return arg
 
 to_print = 'flat_cn only accepts 1 of the following for its argument:\n' +\
-        '\tb -> Boolean Vectors (Doc2Vec)\n' +\
-        '\tt -> TF_IDF Vectors'
+        '\tb -> Boolean Vector (BagOfBooleans)\n' +\
+        '\tt -> TF_IDF Vector\n' +\
+        '\tr -> Random Vector'
 if len(sys.argv) != 2:
     print(to_print)
     sys.exit(1)
@@ -33,6 +36,8 @@ if sys.argv[1].lower() == 'b':
     ENCODING = 'BOOL'
 elif sys.argv[1].lower() == 't':
     ENCODING = 'TF_IDF'
+elif sys.argv[1].lower() == 'r':
+    ENCODING = 'RANDOM'
 else:
     print(to_print)
     sys.exit(1)
@@ -155,13 +160,13 @@ def main():
         model = tf.keras.models.Sequential()
         model.add(tf.keras.Input(shape=input_shape)) # Input
         model.add(tf.keras.layers.Reshape((input_shape[0], 1))), # Converts [None, x] into (x,1,) == [None, x, 1]
-        model.add(tf.keras.layers.Conv1D(filters=5, kernel_size=20, strides=5))
-        model.add(tf.keras.layers.Conv1D(filters=10, kernel_size=20, strides=5))
-        # model.add(tf.keras.layers.MaxPooling1D(15))
+        model.add(tf.keras.layers.Conv1D(filters=5, kernel_size=10, strides=5))
+        model.add(tf.keras.layers.Conv1D(filters=5, kernel_size=10, strides=5))
+        model.add(tf.keras.layers.MaxPooling1D(2))
         model.add(tf.keras.layers.Flatten())
-        model.add(tf.keras.layers.Dense(units=128, activation='relu'))
+        model.add(tf.keras.layers.Dense(units=256, activation='relu'))
         model.add(tf.keras.layers.Dropout(.2))
-        model.add(tf.keras.layers.Dense(units=128, activation='relu'))
+        model.add(tf.keras.layers.Dense(units=256, activation='relu'))
         model.add(tf.keras.layers.Dense(units=2, activation='sigmoid')) # Output
         
         # Compile the model

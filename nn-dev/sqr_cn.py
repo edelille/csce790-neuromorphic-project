@@ -6,35 +6,32 @@ from sklearn.model_selection import train_test_split
 import tensorflow as tf
 import time
 
-# Path variables
-DATA_PATH = 'data/tf_idf.xlsx'
-ENCODING_PATH_DIC = {
-    'TF_IDF': 'encodings/spiral_tf_idf_encoding.txt',
-    'BOOL': 'encodings/spiral_bool_encoding.txt',
-    'RANDOM': 'encodings/random_sqr_encoding.txt'
-}
-MODEL_PATH_DICT = {
-    'TF_IDF': 'models/spiral_tf_idf_cn.h5',
-    'BOOL': 'models/spiral_bool_cn.h5',
-    'RANDOM': 'models/random_sqr_cn.h5'
-}
-
 def num(arg):
     if arg is None:
         return 0
     else:
         return arg
 
-to_print = 'spiral_cn only accepts 1 of the following for its single argument:\n' +\
-        'b -> Boolean Vectors (Doc2Vec)\n' +\
-        't -> TF-IDF Vectors (Doc2Vec\n' +\
-        'r -> Random Square Matrix\n'
+to_print = 'sqr_cn only accepts 1 of the following for its single argument:\n' +\
+        'spb -> Spiral Boolean Vector (BagOfBooleans)\n' +\
+        'spt -> Sprial TF-IDF Square Vector\n' +\
+        'dgb -> Diagonal Gradient Boolean Vector (BagOfBooleans)\n' +\
+        'dgt -> Diagonal TF-IDF Vector\n' +\
+        'r -> Random Square Vector\n'
 if len(sys.argv) != 2:
     print(to_print)
     sys.exit(1)
-if sys.argv[1].lower() == 'b':
+if sys.argv[1].lower() == 'spb':
+    PATTERN = 'SPIRAL'
     ENCODING = 'BOOL'
-elif sys.argv[1].lower() == 't':
+elif sys.argv[1].lower() == 'spt':
+    PATTERN = 'SPIRAL'
+    ENCODING = 'TF_IDF'
+elif sys.argv[1].lower() == 'dgb':
+    PATTERN = 'DG'
+    ENCODING = 'BOOL'
+elif sys.argv[1].lower() == 'dgt':
+    PATTERN = 'DG'
     ENCODING = 'TF_IDF'
 elif sys.argv[1].lower() == 'r':
     ENCODING = 'RANDOM'
@@ -42,8 +39,19 @@ else:
     print(to_print)
     sys.exit(1)
 
+DATA_PATH = 'data/tf_idf.xlsx'
+ENCODING_PATH_DIC = {
+    'BOOL': f'encodings/{PATTERN.lower()}_bool_encoding.txt',
+    'TF_IDF': f'encodings/{PATTERN.lower()}_tf_idf_encoding.txt',
+    'RANDOM': 'encodings/random_sqr_encoding.txt'
+}
+MODEL_PATH_DICT = {
+    'BOOL': f'models/{PATTERN.lower()}_bool_cn.h5',
+    'TF_IDF': f'models/{PATTERN.lower()}_tf_idf_cn.h5',
+    'RANDOM': 'models/random_sqr_cn.h5'
+}
 if ENCODING != 'RANDOM':
-    SAVE_DATA_DIR_PATH = f'npz/spiral_{ENCODING.lower()}_npz/'
+    SAVE_DATA_DIR_PATH = f'npz/{PATTERN.lower()}_{ENCODING.lower()}_npz/'
 else:
     SAVE_DATA_DIR_PATH = f'npz/random_sqr_npz/'
 

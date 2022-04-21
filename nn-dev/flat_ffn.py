@@ -10,11 +10,13 @@ import time
 DATA_PATH = 'data/tf_idf.xlsx'
 ENCODING_PATH_DIC = {
     'TF_IDF': 'encodings/flat_tf_idf_encoding.txt',
-    'BOOL': 'encodings/flat_bool_encoding.txt'
+    'BOOL': 'encodings/flat_bool_encoding.txt',
+    'RANDOM': 'encodings/flat_random_encoding.txt'
 }
 MODEL_PATH_DICT = {
     'TF_IDF': 'models/flat_tf_idf_ffn.h5',
-    'BOOL': 'models/flat_bool_ffn.h5'
+    'BOOL': 'models/flat_bool_ffn.h5',
+    'RANDOM': 'models/flat_random_ffn.h5'
 }
 
 def num(arg):
@@ -24,8 +26,9 @@ def num(arg):
         return arg
     
 to_print = 'flat_ffn only accepts 1 of the following for its single argument:\n' +\
-        '\tb -> Boolean Vectors (Doc2Vec)\n' +\
-        '\tt -> TF-IDF Vectors'
+        '\tb -> Boolean Vector (BagOfBooleans)\n' +\
+        '\tt -> TF-IDF Vector\n' +\
+        '\tr -> Random Vector'
 if len(sys.argv) != 2:
     print(to_print)
     sys.exit(1)
@@ -33,6 +36,8 @@ if sys.argv[1].lower() == 'b':
     ENCODING = 'BOOL'
 elif sys.argv[1].lower() == 't':
     ENCODING = 'TF_IDF'
+elif sys.argv[1].lower() == 'r':
+    ENCODING = 'RANDOM'
 else:
     print(to_print)
     sys.exit(1)
